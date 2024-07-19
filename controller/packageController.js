@@ -19,8 +19,17 @@ const updatePackages = async (req,res) => {
 
         res.status(StatusCodes.CREATED).json({msg: 'Packages updated successfully.'});
     } catch (error) {
-        throw new BAD_REQUEST(`Error updating packes: ${error}`);
+        res.status(StatusCodes.BAD_REQUEST).json({msg: `Error updating packages: ${error}`});    }
+}
+
+const getPackage = async (req, res) => {
+    try {
+        const { packageId } = req.query;
+        const package = await Packages.findById(packageId);
+        res.status(StatusCodes.OK).json(package);
+    } catch (error) {
+        res.status(StatusCodes.BAD_REQUEST).json({msg: `Error fetching package: ${error}`});
     }
 }
 
-module.exports = {updatePackages};
+module.exports = {updatePackages , getPackage};

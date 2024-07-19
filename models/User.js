@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const crypto = require('crypto');
 const secret = process.env.JWT_SECRET;
 const lifeTime = process.env.JWT_LIFETME;
 const refreshLifeTime = process.env.JWT_REFRESH_LIFETME;
@@ -26,7 +27,9 @@ const UserSchema = mongoose.Schema(
         /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         "Please provide a valid email",
       ],
-      unique: true,
+      index:true,
+      sparse:true,
+      unique: true
     },
     password: {
       type: String,
@@ -56,6 +59,8 @@ const UserSchema = mongoose.Schema(
       enum: ["USER", "ADMIN"],
       default: "USER",
     },
+    passwordResetToken: String,
+    passwordResetExpires: Date
   },
   { timestamps: true }
 );
@@ -85,6 +90,19 @@ UserSchema.methods.createRefreshJwt = function () {
     secret,
     { expiresIn: refreshLifeTime }
   );
+};
+
+UserSchema.methods.createPasswordResetToken = function() {
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  
+  this.passwordResetToken = crypto
+    .createHash('sha256')
+    .update(resetToken)
+    .digest('hex');
+    
+  this.passwordResetExpires = Date.now() + 10 * 60 * 1000; // Token expires in 10 minutes
+  
+  return resetToken;
 };
 
 module.exports = mongoose.model("User", UserSchema);
