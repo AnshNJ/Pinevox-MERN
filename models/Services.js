@@ -6,6 +6,10 @@ const ServiceSchema = mongoose.Schema({
         min: [0, "User count must be at least 0"],
         default: 0
     },
+    newNumber:{
+        type: Boolean,
+        default: true,
+    },
     pstnCost:{
         type: Number,
         min: [0, "User count must be at least 0"],
