@@ -1,12 +1,11 @@
 const Order = require("../models/Order");
 const { StatusCodes } = require("http-status-codes");
-const stripeService = require('../services/StripeService')
+const {stripeService} = require('../services/StripeService')
 
 //Save order
 const saveOrder = async (req, res) => {
   try {
-    const { userId } = req.user;
-    console.log(req.body)
+    const { userId, userEmail } = req.user;
     const { cart, address } = req.body;
 
     // Calculate total amount
@@ -32,7 +31,7 @@ const saveOrder = async (req, res) => {
     });
 
     // Create Stripe checkout session
-    const session = await stripeService(orderDetails, totalAmount);
+    const session = await stripeService(orderDetails, order._id, userEmail);
 
     res.status(StatusCodes.CREATED).json({ order, sessionUrl: session.url });
   } catch (error) {

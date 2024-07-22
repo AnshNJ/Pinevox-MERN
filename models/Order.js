@@ -8,7 +8,7 @@ const OrderSchema = mongoose.Schema({
     },
     paymentStatus:{
         type: String,
-        enum: ['pending', 'success', 'failed'],
+        enum: ['pending', 'success', 'failed', 'cancelled'],
         default: 'pending'
     },
     user:{
@@ -37,7 +37,11 @@ const OrderSchema = mongoose.Schema({
             type: Number,
             required: [true, "Please provide a quantity"]
         }
-    }]
+    }],
+    receipt:{
+        type: String,
+        required: false
+    }
 })
 
 module.exports = mongoose.model("Order", OrderSchema);
