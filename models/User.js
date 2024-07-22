@@ -78,7 +78,7 @@ UserSchema.methods.comparePassword = async function(candidatePassword){
 
 UserSchema.methods.createJwt = function () {
   return jwt.sign(
-    { userId: this._id, username: this.firstName, userEmail: this.userEmail },
+    { userId: this._id, username: this.firstName, userEmail: this.userEmail, role:this.role },
     secret,
     { expiresIn: lifeTime }
   );
@@ -86,7 +86,7 @@ UserSchema.methods.createJwt = function () {
 
 UserSchema.methods.createRefreshJwt = function () {
   return jwt.sign(
-    { userId: this._id, username: this.firstName, userEmail: this.userEmail },
+    { userId: this._id, username: this.firstName, userEmail: this.userEmail, role:this.role },
     secret,
     { expiresIn: refreshLifeTime }
   );
