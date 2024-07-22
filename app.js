@@ -25,6 +25,7 @@ const serviceRouter = require('./routes/serviceRoute');
 const mandateRouter = require('./routes/mandateRoute');
 const orderRouter = require('./routes/orderRoute');
 const productRouter = require('./routes/productRoute');
+const userRouter = require('./routes/userRoute');
 
 // DB connection
 const connectDB = require('./db/connect');
@@ -50,6 +51,7 @@ app.use('/api/v1/services', authMiddleware, serviceRouter);
 app.use('/api/v1/mandate', authMiddleware, mandateRouter);
 app.use('/api/v1/order', authMiddleware, orderRouter);
 app.use('/api/v1/products', productRouter);
+app.use('/api/v1/user', authMiddleware, userRouter);
 
 app.use(notFoundMiddleware);
 // app.use(errorHandlerMiddleware); // Ensure error handler is not affecting the webhook
