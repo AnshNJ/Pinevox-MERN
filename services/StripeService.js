@@ -25,8 +25,8 @@ const stripeService = async (orderDetails, orderId, userEmail) => {
     metadata: {
       order_id: orderId.toString(),
     },
-    success_url: `${process.env.YOUR_DOMAIN}/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `${process.env.YOUR_DOMAIN}/cancel`,
+    success_url: `${process.env.YOUR_DOMAIN}/PaymentSuccess?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${process.env.YOUR_DOMAIN}/PaymentFailure`,
   });
 
   return session;

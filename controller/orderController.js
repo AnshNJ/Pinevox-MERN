@@ -1,6 +1,6 @@
 const Order = require("../models/Order");
 const { StatusCodes } = require("http-status-codes");
-const {stripeService} = require('../services/StripeService')
+const { stripeService } = require('../services/StripeService')
 
 //Save order
 const saveOrder = async (req, res) => {
@@ -10,15 +10,15 @@ const saveOrder = async (req, res) => {
 
     // Calculate total amount
     const totalAmount = cart.reduce(
-      (sum, item) => sum + item.retailPrice * item.qty,
+      (sum, item) => sum + item.retail_price * item.qty,
       0
     );
 
     // Prepare order details
     const orderDetails = cart.map((item) => ({
       item: item.item,
-      category: item.category,
-      retailPrice: item.retailPrice,
+      category: item.Catergory,
+      retailPrice: item.retail_price,
       qty: item.qty,
     }));
 
@@ -44,8 +44,8 @@ const saveOrder = async (req, res) => {
 
 //Get orders
 const getOrders = async (req, res) => {
-  const orders = Order.find({user: req.user.userId});
-  res.status(StatusCodes.OK).json({orders});
+  const orders = await Order.find({ user: req.user.userId });
+  res.status(StatusCodes.OK).json({ orders });
 }
 
 

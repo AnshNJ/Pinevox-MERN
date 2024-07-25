@@ -4,20 +4,20 @@ const bodyParser = require('body-parser');
 const app = express();
 require('dotenv').config();
 require('express-async-errors');
-
+ 
 const authMiddleware = require('./middleware/authentication');
 const { bill, handleCheckoutSession, handlePaymentFailure } = require('./services/StripeService');
-
+ 
 // Extra security packages
 const helmet = require('helmet');
 const cors = require('cors');
 const xss = require('xss-clean');
 const rateLimit = require('express-rate-limit');
-
+ 
 // Error handlers
 const notFoundMiddleware = require('./middleware/not-found');
 const errorHandlerMiddleware = require('./middleware/error-handler');
-
+ 
 // Routers
 const authRouter = require('./routes/authRoute');
 const addressRouter = require('./routes/addressRoute');
@@ -26,24 +26,46 @@ const mandateRouter = require('./routes/mandateRoute');
 const orderRouter = require('./routes/orderRoute');
 const productRouter = require('./routes/productRoute');
 const userRouter = require('./routes/userRoute');
-
+ 
 // DB connection
 const connectDB = require('./db/connect');
-
+ 
 app.set('trust proxy', 1);
 app.use(rateLimit({
   windowMs: 10 * 60 * 1000, // 10 min
   max: 100
 }));
 app.use(helmet());
-app.use(cors());
-app.use(xss());
+ 
+// Updated CORS configuration
+const corsOptions = {
+  origin: ['http://localhost:3006', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  optionsSuccessStatus: 204,
+  maxAge: 600
 
+};
+ 
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Enable pre-flight for all routes
+ 
+app.use(xss());
+ 
+// Handle OPTIONS requests for authentication routes
+app.use((req, res, next) => {
+  if (req.method === 'OPTIONS') {
+    return next();
+  }
+  next();
+});
+ 
 // Raw body parser for Stripe webhook
 app.post('/api/v1/webhook', bodyParser.raw({ type: 'application/json' }), bill);
-
+ 
 app.use(express.json()); // JSON parsing for other routes
-
+ 
 // Other routes
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/address', authMiddleware, addressRouter);
@@ -52,10 +74,10 @@ app.use('/api/v1/mandate', authMiddleware, mandateRouter);
 app.use('/api/v1/order', authMiddleware, orderRouter);
 app.use('/api/v1/products', productRouter);
 app.use('/api/v1/user', authMiddleware, userRouter);
-
+ 
 app.use(notFoundMiddleware);
 // app.use(errorHandlerMiddleware); // Ensure error handler is not affecting the webhook
-
+ 
 // Start the server
 const port = process.env.PORT || 3000;
 const start = async () => {

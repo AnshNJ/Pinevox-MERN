@@ -2,6 +2,9 @@ const jwt = require('jsonwebtoken');
 const UnauthenticatedError = require('../errors/unauthenticated')
 
 const authMiddleware = (req, res, next) => {
+    if (req.method === "OPTIONS") {
+        return res.sendStatus(200);
+      }
     const authHeader = req.headers.authorization;
 
     if(!authHeader || !authHeader.startsWith("Bearer ")){
