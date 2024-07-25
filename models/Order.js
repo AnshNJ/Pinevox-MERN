@@ -27,7 +27,7 @@ const OrderSchema = mongoose.Schema({
         },
         category:{
             type: String,
-            required: [true, "Please provide a product name"]
+            required: false
         },
         retailPrice: {
             type: Number,
@@ -42,6 +42,6 @@ const OrderSchema = mongoose.Schema({
         type: String,
         required: false
     }
-})
+},{timestamps: true})
 
 module.exports = mongoose.model("Order", OrderSchema);
