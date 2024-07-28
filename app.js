@@ -7,6 +7,7 @@ require('express-async-errors');
 
 const authMiddleware = require('./middleware/authentication');
 const { bill } = require('./services/StripeService');
+const {mandateStatus} = require('./services/GocardlessService');
 
 // Extra security packages
 const helmet = require('helmet');
@@ -60,7 +61,8 @@ app.use((req, res, next) => {
 });
 
 // Raw body parser for Stripe webhook
-app.post('/api/v1/webhook', bodyParser.raw({ type: 'application/json' }), bill);
+app.post('/api/v1/webhook/stripe', bodyParser.raw({ type: 'application/json' }), bill);
+app.post('/api/v1/webhook/gocardless', bodyParser.raw({ type: 'application/json' }), mandateStatus);
 
 app.use(express.json()); // JSON parsing for other routes
 
@@ -68,7 +70,7 @@ app.use(express.json()); // JSON parsing for other routes
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/address', authMiddleware, addressRouter);
 app.use('/api/v1/services', authMiddleware, serviceRouter);
-app.use('/api/v1/mandate', authMiddleware, mandateRouter);
+app.use('/api/v1/mandate',authMiddleware, mandateRouter);
 app.use('/api/v1/order', authMiddleware, orderRouter);
 app.use('/api/v1/products', productRouter);
 app.use('/api/v1/user', authMiddleware, userRouter);

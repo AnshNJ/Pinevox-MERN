@@ -15,14 +15,16 @@ const MandateSchema = mongoose.Schema({
         required: [true, "Please provide a valid total amount"],
         min: [0, "Total amount cannot be below 0"]
     },
+    gocardlessBillId: String,
     gocardlessMandateId:{
         type: String
     },
-    paymentStatus:{
+    mandateStatus:{
         type:String,
-        enum: ['pending', 'success', 'failed'],
         default: 'pending'
     },
+    subscriptionStatus: String,
+    subscriptionId: String,
     user:{
         type: mongoose.Types.ObjectId, //Join with another doc's object ID
         ref: "User", //which model are we referencing
