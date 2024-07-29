@@ -11,12 +11,15 @@ const saveOrder = async (req, res) => {
     // Calculate total amount
     const totalAmount = cart.reduce(
       (sum, item) => sum + item.retail_price * item.qty,
+      (sum, item) => sum + item.retail_price * item.qty,
       0
     );
 
     // Prepare order details
     const orderDetails = cart.map((item) => ({
       item: item.item,
+      category: item.Catergory,
+      retailPrice: item.retail_price,
       category: item.Catergory,
       retailPrice: item.retail_price,
       qty: item.qty,

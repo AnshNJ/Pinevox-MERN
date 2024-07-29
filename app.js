@@ -6,8 +6,8 @@ require('dotenv').config();
 require('express-async-errors');
  
 const authMiddleware = require('./middleware/authentication');
-const { bill, handleCheckoutSession, handlePaymentFailure } = require('./services/StripeService');
- 
+const { bill } = require('./services/StripeService');
+
 // Extra security packages
 const helmet = require('helmet');
 const cors = require('cors');
@@ -36,23 +36,21 @@ app.use(rateLimit({
   max: 100
 }));
 app.use(helmet());
- 
+
 // Updated CORS configuration
 const corsOptions = {
   origin: ['http://localhost:3006', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
-  optionsSuccessStatus: 204,
-  maxAge: 600
-
+  optionsSuccessStatus: 204
 };
- 
+
 app.use(cors(corsOptions));
 app.options('*', cors(corsOptions)); // Enable pre-flight for all routes
- 
+
 app.use(xss());
- 
+
 // Handle OPTIONS requests for authentication routes
 app.use((req, res, next) => {
   if (req.method === 'OPTIONS') {
@@ -60,7 +58,7 @@ app.use((req, res, next) => {
   }
   next();
 });
- 
+
 // Raw body parser for Stripe webhook
 app.post('/api/v1/webhook', bodyParser.raw({ type: 'application/json' }), bill);
  
