@@ -1,6 +1,6 @@
 const GoCardlessService = require('../services/GocardlessService');
 const { StatusCodes } = require('http-status-codes')
-const {initializeMandate} = require('../services/GocardlessService');
+const {initializeMandate, mandateStatus} = require('../services/GocardlessService');
 
 
 const initiateMandate = async (req, res) => {
@@ -9,10 +9,4 @@ const initiateMandate = async (req, res) => {
     res.status(StatusCodes.CREATED).json({ authorisationUrl });
 }
 
-const gocardlessWebhook = async (req, res) => {
-    const signatureHeader = req.headers['webhook-signature'];
-    const { status, body } = await mandateStatus(signatureHeader, req.body);
-    res.status(status).send(body);  
-}
-
-module.exports = {initiateMandate, gocardlessWebhook};
+module.exports = {initiateMandate};

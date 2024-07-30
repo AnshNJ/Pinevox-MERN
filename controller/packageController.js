@@ -24,8 +24,8 @@ const updatePackages = async (req,res) => {
 
 const getPackage = async (req, res) => {
     try {
-        const { packageId } = req.query;
-        const package = await Packages.findById(packageId);
+        const { packageName } = req.query;
+        const package = await Packages.findOne({packageName});
         res.status(StatusCodes.OK).json(package);
     } catch (error) {
         res.status(StatusCodes.BAD_REQUEST).json({msg: `Error fetching package: ${error}`});
