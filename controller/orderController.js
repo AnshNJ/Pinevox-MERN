@@ -11,7 +11,6 @@ const saveOrder = async (req, res) => {
     // Calculate total amount
     const totalAmount = cart.reduce(
       (sum, item) => sum + item.retail_price * item.qty,
-      (sum, item) => sum + item.retail_price * item.qty,
       0
     );
 
