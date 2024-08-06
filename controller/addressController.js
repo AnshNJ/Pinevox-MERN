@@ -8,7 +8,7 @@ const saveAddress = async (req, res) => {
     const addressData = { ...req.body, user: userId };
 
     const address = await Address.findOneAndUpdate(
-      { user: userId },
+      { user: userId },  // Filter: find the address document for this user
       addressData,
       { upsert: true, new: true, runValidators: true }
     );

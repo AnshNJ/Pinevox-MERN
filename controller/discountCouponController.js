@@ -16,13 +16,16 @@ const saveCoupons = async (req, res) => {
     try {
         const coupons = Array.isArray(req.body) ? req.body : [req.body];
         
-        const operations = coupons.map(coupon => ({
-            updateOne: {
-                filter: { name: coupon.name },
-                update: { $set: coupon },
-                upsert: true
-            }
-        }));
+        const operations = coupons.map(coupon => {
+            
+            return {
+                updateOne: {
+                    filter: { name: coupon.name },
+                    update: { $set: coupon },
+                    upsert: true
+                }
+            };
+        });
 
         const result = await discountCoupon.bulkWrite(operations);
 
